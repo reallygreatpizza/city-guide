@@ -7,6 +7,11 @@ import {
   Text,
 } from 'react-native';
 import data from './locations.json';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
+setTimeout(SplashScreen.hideAsync, 2000);
+
 
 
 const cityIcon = require('./images/chicago.png');
