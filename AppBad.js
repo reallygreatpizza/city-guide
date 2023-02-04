@@ -2,30 +2,41 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  FlatList,
+  //ListView,
   Image,
   Text,
 } from 'react-native';
 import data from './locations.json';
-
+import ListView from 'deprecated-react-native-listview';
 
 const cityIcon = require('./images/chicago.png');
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    const dataSource = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    });
 
+    this.state = {
+      dataSource: dataSource.cloneWithRows(data),
+    };
+  }
 
-  renderRow({item}) {
+  renderRow(record) {
     return (
       <View style={styles.row}>
         <View style={styles.iconContainer}>
           <Image source={cityIcon} style={styles.icon} />
         </View>
         <View style={styles.info}>
-          <Text style={styles.items}>{item.name}</Text>
-          <Text style={styles.address}>{item.address}</Text>
-          <Text style={styles.url}>{item.modUrl}</Text>
+          <Text style={styles.items}>{record.items} Items</Text>
+          <Text style={styles.address}>{record.address}</Text>
         </View>
-
+        <View style={styles.total}>
+          <Text style={styles.date}>{record.date}</Text>
+          <Text style={styles.price}>${record.total}</Text>
+        </View>
       </View>
     );
   }
@@ -34,7 +45,10 @@ export default class App extends React.Component {
     return (
       <View style={styles.mainContainer}>
         <Text style={styles.title}>City Guide</Text>
-        <FlatList data={data} renderItem={this.renderRow} /> 
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={this.renderRow}
+        />
       </View>
     );
   }
@@ -43,11 +57,11 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#ede2e0',
+    backgroundColor: '#fff',
   },
   title: {
-    backgroundColor: '#1c7da5',
-    color: '#ede2e0',
+    backgroundColor: '#0f1b29',
+    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
     padding: 10,
@@ -55,7 +69,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   row: {
-    borderColor: '#7b7983',
+    borderColor: '#f1f1f1',
     borderBottomWidth: 1,
     flexDirection: 'row',
     marginLeft: 10,
@@ -65,17 +79,18 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     alignItems: 'center',
-    backgroundColor: '#1f3243',
-    borderColor: '#1f3243',
+    backgroundColor: '#feb401',
+    borderColor: '#feaf12',
     borderRadius: 25,
     borderWidth: 1,
     justifyContent: 'center',
-    height: 70,
-    width: 70,
+    height: 50,
+    width: 50,
   },
   icon: {
-    height: 45,
-    width: 45,
+    tintColor: '#fff',
+    height: 22,
+    width: 22,
   },
   info: {
     flex: 1,
@@ -84,18 +99,23 @@ const styles = StyleSheet.create({
   },
   items: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 16,
     marginBottom: 5,
-    color: '#122737'
   },
   address: {
-    color: '#3c4f62',
-    fontSize: 16,
+    color: '#ccc',
+    fontSize: 14,
   },
-  url: {
-    color: '#3c4f62',
-    fontSize: 16,
-    fontStyle: 'italic',
+  total: {
+    width: 80,
   },
-
+  date: {
+    fontSize: 12,
+    marginBottom: 5,
+  },
+  price: {
+    color: '#1cad61',
+    fontSize: 25,
+    fontWeight: 'bold',
+  }
 });
